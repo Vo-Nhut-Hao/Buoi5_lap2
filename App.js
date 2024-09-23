@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './AuthContext';
+import SignupScreen from './SignupScreen';
+import LoginScreen from './LoginScreen';
+import HomeScreen from './HomeScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const App = () => {
+    const [initialRoute, setInitialRoute] = useState('Login');
+
+    useEffect(() => {
+        // Logic kiểm tra token ở đây nếu cần
+        setInitialRoute('Login'); // Hoặc 'Home' nếu đã đăng nhập
+    }, []);
+
+    return (
+        <AuthProvider>
+            <PaperProvider>
+                <NavigationContainer>
+                    <Stack.Navigator initialRouteName={initialRoute}>
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Signup" component={SignupScreen} />
+                        <Stack.Screen name="Home" component={HomeScreen} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </PaperProvider>
+        </AuthProvider>
+    );
+};
+
+export default App;
